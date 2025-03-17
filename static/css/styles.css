@@ -1,0 +1,559 @@
+/* Base Styles */
+:root {
+    --primary-color: #1a2b5a;
+    --primary-hover: #152348;
+    --secondary-color: #64748b;
+    --secondary-hover: #475569;
+    --accent-color: #5a8eff;
+    --success-color: #10b981;
+    --error-color: #ef4444;
+    --text-color: #1a2b5a;
+    --light-text: #64748b;
+    --border-color: #e2e8f0;
+    --background-color: #1a2b5a;
+    --card-background: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--card-background);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+/* Typography */
+h1, h2, h3 {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+h3 {
+    font-size: 1.25rem;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+/* Header & Footer */
+header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-image {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 0.5rem;
+}
+
+.tagline {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    margin-top: 0.5rem;
+    font-weight: 500;
+}
+
+.step-indicator {
+    color: var(--light-text);
+    margin-top: 1rem;
+}
+
+footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+    color: var(--light-text);
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+/* Buttons */
+.button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.secondary {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.secondary:hover {
+    background-color: var(--secondary-hover);
+}
+
+.accent {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.accent:hover {
+    background-color: var(--accent-color);
+    opacity: 0.9;
+}
+
+.button:disabled {
+    background-color: var(--border-color);
+    color: var(--light-text);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.button:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Form Elements */
+.form-section {
+    background-color: var(--card-background);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="password"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(26, 43, 90, 0.1);
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox input {
+    margin-right: 0.5rem;
+}
+
+.checkbox label {
+    margin-bottom: 0;
+}
+
+.static-field {
+    padding: 0.75rem;
+    background-color: rgba(26, 43, 90, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-color);
+}
+
+/* Timeline Entries */
+.timeline-entry {
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.remove-entry {
+    background: none;
+    border: none;
+    color: var(--error-color);
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+/* Timeline Visualization */
+.timeline-visualization {
+    margin: 2rem 0;
+}
+
+.timeline-container {
+    position: relative;
+    height: 100px;
+    margin: 1.5rem 0;
+}
+
+.timeline-ruler {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: rgba(26, 43, 90, 0.1);
+    border-radius: 2px;
+}
+
+#timeline-segments {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    height: 24px;
+}
+
+.timeline-segment {
+    position: absolute;
+    height: 24px;
+    border-radius: 4px;
+    background-color: var(--primary-color);
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.timeline-segment:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+.timeline-segment.gap {
+    background-color: var(--error-color);
+    opacity: 0.5;
+}
+
+.timeline-labels {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-color);
+}
+
+.timeline-segment-tooltip {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--primary-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.timeline-segment:hover .timeline-segment-tooltip {
+    opacity: 1;
+}
+
+.time-accounted {
+    margin: 1.5rem 0;
+    padding: 0.75rem;
+    background-color: rgba(26, 43, 90, 0.05);
+    border-radius: 4px;
+    font-weight: 500;
+    color: var(--text-color);
+    border-left: 4px solid var(--primary-color);
+}
+
+.validation-message {
+    margin-top: 0.5rem;
+    color: var(--error-color);
+}
+
+.validation-message.success {
+    color: var(--success-color);
+}
+
+/* Signature */
+.attestation {
+    font-style: italic;
+    margin-bottom: 1.5rem;
+}
+
+.signature-container {
+    margin-bottom: 1.5rem;
+}
+
+#signature-canvas {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: white;
+    width: 100%;
+    max-width: 400px;
+    height: 200px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Confirmation Page */
+.confirmation {
+    text-align: center;
+}
+
+.confirmation-message {
+    margin: 2rem 0;
+}
+
+.download-section {
+    margin: 2rem 0;
+}
+
+.instructions {
+    margin: 2rem 0;
+    text-align: left;
+}
+
+/* Error Page */
+.error-section {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.error-message {
+    margin: 2rem 0;
+    padding: 1rem;
+    background-color: #fff3f3;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--error-color);
+}
+
+.error-actions {
+    margin: 2rem 0;
+}
+
+/* Form Navigation */
+.form-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.form-navigation button {
+    min-width: 150px;
+}
+
+.form-navigation .prev-step {
+    margin-right: auto;
+}
+
+.form-navigation .next-step {
+    margin-left: auto;
+}
+
+/* When there's only one button (like in the first step) */
+.form-navigation:has(.next-step:only-child) .next-step {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Progress indicator */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: var(--border-color);
+    border-radius: 4px;
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+        margin: 10px;
+        width: calc(100% - 20px);
+        max-width: 100%;
+    }
+    
+    header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .step-indicator {
+        margin-top: 0.5rem;
+    }
+    
+    .form-section {
+        padding: 1rem;
+    }
+    
+    .form-navigation {
+        flex-direction: column;
+    }
+    
+    .form-navigation button {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+    
+    .timeline-container {
+        height: 120px;
+    }
+    
+    .timeline-labels {
+        top: 90px;
+    }
+    
+    #signature-canvas {
+        height: 150px;
+    }
+    
+    .button {
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 0.95rem;
+    }
+    
+    h1 {
+        font-size: 1.75rem;
+    }
+    
+    h2 {
+        font-size: 1.35rem;
+    }
+    
+    h3 {
+        font-size: 1.15rem;
+    }
+    
+    .container {
+        padding: 10px;
+    }
+    
+    .form-section {
+        padding: 0.75rem;
+    }
+    
+    .timeline-entry {
+        padding: 0.75rem;
+    }
+    
+    .logo-image {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .tagline {
+        font-size: 1rem;
+    }
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trua Verify - Welcome</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo">
+                    <svg class="logo-image" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="40" fill="#f8f9fa" stroke="#1a2b5a" stroke-width="2" />
+                        <path d="M50 20 A30 30 0 0 1 80 50 L50 50 Z" fill="#1a2b5a" />
+                        <path d="M50 50 L50 80 A30 30 0 0 1 20 50 Z" fill="#5a8eff" />
+                    </svg>
+                </div>
+                <div class="tagline">Truth, Trust & Ownership</div>
+            </div>
+        </header>
+        
+        <main>
+            <section id="introduction">
+                <h1>Welcome to Trua Verify</h1>
+                <p>You've been invited to submit your employment history for the last {{ years }} years. You'll be asked to provide details of your employment, including gaps, and sign digitally to certify accuracy. This process takes approximately 5-10 minutes.</p>
+                
+                <a href="{{ url_for('form', tracking_id=tracking_id, years=years) }}" class="button primary">Start My Verification</a>
+            </section>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 Trua Verify. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>

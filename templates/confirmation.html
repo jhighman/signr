@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trua Verify - Submission Confirmation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo">
+                    <svg class="logo-image" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="40" fill="#f8f9fa" stroke="#1a2b5a" stroke-width="2" />
+                        <path d="M50 20 A30 30 0 0 1 80 50 L50 50 Z" fill="#1a2b5a" />
+                        <path d="M50 50 L50 80 A30 30 0 0 1 20 50 Z" fill="#5a8eff" />
+                    </svg>
+                </div>
+                <div class="tagline">Truth, Trust & Ownership</div>
+            </div>
+        </header>
+        
+        <main>
+            <section class="confirmation">
+                <h1>Claim Submitted Successfully</h1>
+                
+                <div class="confirmation-message">
+                    <p>Thank you, {{ claimant_name }}. Your employment history and digital signature have been received. You can download your signed document below, and we've emailed a copy for your records.</p>
+                </div>
+                
+                <div class="download-section">
+                    <a href="{{ url_for('download', filename=pdf_filename) }}" class="button primary">Download PDF Copy</a>
+                </div>
+                
+                <div class="instructions">
+                    <h2>Next Steps</h2>
+                    <p>Please send this PDF to your verifier (e.g., employer, recruiter) as instructed.</p>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 Trua Verify. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>

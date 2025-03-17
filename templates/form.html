@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trua Verify - Employment History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo">
+                    <svg class="logo-image" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="40" fill="#f8f9fa" stroke="#1a2b5a" stroke-width="2" />
+                        <path d="M50 20 A30 30 0 0 1 80 50 L50 50 Z" fill="#1a2b5a" />
+                        <path d="M50 50 L50 80 A30 30 0 0 1 20 50 Z" fill="#5a8eff" />
+                    </svg>
+                </div>
+                <div class="tagline">Truth, Trust & Ownership</div>
+            </div>
+            <div class="step-indicator" id="step-indicator">Step 1 of 3: Personal Information</div>
+        </header>
+        
+        <main>
+            <form id="employmentForm" action="{{ url_for('submit') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="tracking_id" value="{{ tracking_id }}">
+                <input type="hidden" name="years" value="{{ years }}">
+                
+                <!-- Multi-step form with navigation -->
+                <div class="form-steps">
+                    <!-- Step 1: Personal Information -->
+                    <section class="form-section" id="step-1" data-step="1">
+                        <h2>Personal Information</h2>
+                        <div class="form-group">
+                            <label for="full_name">Full Name *</label>
+                            <input type="text" id="full_name" name="full_name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Phone (optional)</label>
+                            <input type="tel" id="phone" name="phone" placeholder="555-987-6543">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Timeframe</label>
+                            <div class="static-field">Last {{ years }} Years</div>
+                        </div>
+                        
+                        <div class="form-navigation">
+                            <button type="button" class="button primary next-step" data-next="2">Next: Employment Timeline</button>
+                        </div>
+                    </section>
+                    
+                    <!-- Step 2: Timeline Overview -->
+                    <section class="form-section" id="step-2" data-step="2" style="display: none;">
+                        <h2>Employment Timeline</h2>
+                        <p>Please account for the last {{ years }} years of your employment history, including any gaps.</p>
+                        
+                        <div class="timeline-visualization">
+                            <h3>Timeline Coverage</h3>
+                            <div class="timeline-container">
+                                <div class="timeline-ruler"></div>
+                                <div id="timeline-segments"></div>
+                                <div class="timeline-labels">
+                                    <div class="timeline-start-label">Now - <span id="timeline-start-year"></span></div>
+                                    <div class="timeline-end-label"><span id="timeline-end-year"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="time-accounted">
+                            <span>Time accounted for: </span>
+                            <span id="years-accounted">0</span>
+                            <span> years</span>
+                            <div id="time-validation" class="validation-message"></div>
+                        </div>
+                        
+                        <div class="entries-summary" id="entries-summary">
+                            <h3>Your Entries</h3>
+                            <div id="entries-list" class="entries-list">
+                                <!-- Entry summaries will be displayed here -->
+                                <p class="no-entries-message">No entries yet. Add your first employment entry.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="form-navigation">
+                            <button type="button" class="button secondary prev-step" data-prev="1">Previous: Personal Information</button>
+                            <button type="button" class="button secondary" id="add-entry-btn">Add Employment Entry</button>
+                            <button type="button" class="button primary next-step" id="to-signature-btn" data-next="4" disabled>Next: Signature</button>
+                        </div>
+                    </section>
+                    
+                    <!-- Step 3: Entry Form (Single Entry at a time) -->
+                    <section class="form-section" id="step-3" data-step="3" style="display: none;">
+                        <h2>Employment Entry</h2>
+                        <p>Please provide details for this employment period.</p>
+                        
+                        <div id="current-entry-container">
+                            <!-- Current entry form will be placed here -->
+                        </div>
+                        
+                        <div class="form-navigation">
+                            <button type="button" class="button secondary" id="back-to-timeline-btn">Back to Timeline</button>
+                            <button type="button" class="button primary" id="save-entry-btn">Save Entry</button>
+                        </div>
+                    </section>
+                    
+                    <!-- Step 4: Signature -->
+                    <section class="form-section signature-section" id="step-4" data-step="4" style="display: none;">
+                        <h2>Attestation & Signature</h2>
+                        <p class="attestation">I, <span id="attestation-name"></span>, certify that the employment information provided is accurate and complete to the best of my knowledge.</p>
+                        
+                        <div class="signature-container">
+                            <canvas id="signature-canvas" width="400" height="200"></canvas>
+                            <button type="button" id="clear-signature" class="button secondary">Clear Signature</button>
+                        </div>
+                        
+                        <input type="hidden" id="signature_data" name="signature_data">
+                        
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="legal-acknowledgment" required>
+                            <label for="legal-acknowledgment">I understand this electronic signature is legally binding.</label>
+                        </div>
+                        
+                        <div class="form-navigation">
+                            <button type="button" class="button secondary prev-step" data-prev="2">Previous: Employment Timeline</button>
+                            <button type="submit" id="submit-button" class="button primary" disabled>Submit Claim</button>
+                        </div>
+                    </section>
+                </div>
+            </form>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 Trua Verify. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <!-- Template for timeline entry -->
+    <template id="timeline-entry-template">
+        <div class="timeline-entry" data-index="{index}">
+            <div class="entry-header">
+                <h3>Timeline Entry #{index_plus_one}</h3>
+                <button type="button" class="remove-entry" data-index="{index}">Remove</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="entry_type_{index}">Entry Type *</label>
+                <select id="entry_type_{index}" name="entry_type_{index}" class="entry-type" required>
+                    <option value="Job">Job</option>
+                    <option value="Unemployed">Unemployed/Gap</option>
+                    <option value="Education">Education</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            
+            <div class="job-fields">
+                <div class="form-group">
+                    <label for="company_{index}">Company/Organization *</label>
+                    <input type="text" id="company_{index}" name="company_{index}" class="company-field" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="position_{index}">Position/Title *</label>
+                    <input type="text" id="position_{index}" name="position_{index}" class="position-field" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="start_date_{index}">Start Month *</label>
+                <input type="month" id="start_date_{index}" name="start_date_{index}" class="date-field start-date" required>
+            </div>
+            
+            <div class="form-group end-date-group">
+                <label for="end_date_{index}">End Month *</label>
+                <input type="month" id="end_date_{index}" name="end_date_{index}" class="date-field end-date" required>
+            </div>
+            
+            <div class="form-group checkbox">
+                <input type="checkbox" id="is_current_{index}" name="is_current_{index}" class="is-current">
+                <label for="is_current_{index}">I am currently employed here</label>
+            </div>
+            
+            <div class="form-group">
+                <label for="description_{index}">Description/Details (optional)</label>
+                <textarea id="description_{index}" name="description_{index}" class="description-field"></textarea>
+            </div>
+            
+            <div class="contact-fields">
+                <div class="form-group">
+                    <label for="contact_name_{index}">Contact Name *</label>
+                    <input type="text" id="contact_name_{index}" name="contact_name_{index}" class="contact-name-field" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contact_info_{index}">Contact Email/Phone *</label>
+                    <input type="text" id="contact_info_{index}" name="contact_info_{index}" class="contact-info-field" required>
+                </div>
+            </div>
+        </div>
+    </template>
+    
+    <script src="{{ url_for('static', filename='js/signature_pad.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/form.js') }}"></script>
+</body>
+</html>
