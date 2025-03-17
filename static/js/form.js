@@ -182,37 +182,56 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (lastStartDateInput && lastStartDateInput.value) {
                     previousStartDate = lastStartDateInput.value;
                     
-                    // Set this entry's end date to one month before the previous entry's start date
-                    const prevStartDateParts = previousStartDate.split('-');
-                    const prevStartYear = parseInt(prevStartDateParts[0]);
-                    const prevStartMonth = parseInt(prevStartDateParts[1]);
+                    // Get the previous entry's end date
+                    const lastEndDateInput = document.getElementById(`end_date_${lastEntryIndex}`);
+                    const lastIsCurrentInput = document.getElementById(`is_current_${lastEntryIndex}`);
                     
-                    // Calculate one month before for end date
-                    let endMonth = prevStartMonth - 1;
-                    let endYear = prevStartYear;
-                    if (endMonth < 1) {
-                        endMonth = 12;
-                        endYear--;
+                    // If the previous entry is current employment, we need to calculate an end date
+                    let endDateStr;
+                    if (lastIsCurrentInput && lastIsCurrentInput.checked) {
+                        // For current employment, use the start date minus one month
+                        const prevStartDateParts = previousStartDate.split('-');
+                        const prevStartYear = parseInt(prevStartDateParts[0]);
+                        const prevStartMonth = parseInt(prevStartDateParts[1]);
+                        
+                        // Calculate one month before for end date
+                        let endMonth = prevStartMonth - 1;
+                        let endYear = prevStartYear;
+                        if (endMonth < 1) {
+                            endMonth = 12;
+                            endYear--;
+                        }
+                        
+                        // Format as YYYY-MM
+                        endDateStr = `${endYear}-${endMonth.toString().padStart(2, '0')}`;
+                    } else if (lastEndDateInput && lastEndDateInput.value) {
+                        // Use the previous entry's end date directly
+                        endDateStr = lastEndDateInput.value;
+                    } else {
+                        // Fallback: use previous start date minus one month
+                        const prevStartDateParts = previousStartDate.split('-');
+                        const prevStartYear = parseInt(prevStartDateParts[0]);
+                        const prevStartMonth = parseInt(prevStartDateParts[1]);
+                        
+                        // Calculate one month before for end date
+                        let endMonth = prevStartMonth - 1;
+                        let endYear = prevStartYear;
+                        if (endMonth < 1) {
+                            endMonth = 12;
+                            endYear--;
+                        }
+                        
+                        // Format as YYYY-MM
+                        endDateStr = `${endYear}-${endMonth.toString().padStart(2, '0')}`;
                     }
-                    
-                    // Format as YYYY-MM
-                    const endDateStr = `${endYear}-${endMonth.toString().padStart(2, '0')}`;
                     
                     // Set the end date for the new entry
                     if (endDateInput) {
                         endDateInput.value = endDateStr;
                     }
                     
-                    // Set start date to one month before the end date
-                    let newStartMonth = endMonth - 1;
-                    let newStartYear = endYear;
-                    if (newStartMonth < 1) {
-                        newStartMonth = 12;
-                        newStartYear--;
-                    }
-                    
-                    // Format as YYYY-MM
-                    const startDateStr = `${newStartYear}-${newStartMonth.toString().padStart(2, '0')}`;
+                    // Set start date to the same as the end date
+                    const startDateStr = endDateStr;
                     
                     // Set the start date
                     if (startDateInput) {
