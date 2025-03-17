@@ -91,10 +91,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const saveEntryBtn = document.getElementById('save-entry-btn');
         if (saveEntryBtn) {
             saveEntryBtn.addEventListener('click', function() {
-                if (saveCurrentEntry()) {
-                    // Go back to timeline overview (step 2)
-                    goToStep(2);
-                }
+                // saveCurrentEntry now handles the navigation based on entry index
+                saveCurrentEntry();
             });
         }
     }
@@ -119,6 +117,109 @@ document.addEventListener('DOMContentLoaded', function() {
         // Append the entry to the container
         currentEntryContainer.appendChild(tempDiv.firstElementChild);
         
+        // Get the current entry elements
+        const isCurrentCheckbox = document.getElementById(`is_current_${entryCount}`);
+        const currentEmploymentCheckbox = document.querySelector(`.current-employment-checkbox`);
+        const endDateGroup = document.querySelector(`.end-date-group`);
+        const endDateInput = document.getElementById(`end_date_${entryCount}`);
+        const startDateInput = document.getElementById(`start_date_${entryCount}`);
+        
+        // For the first entry (current employment)
+        if (entryCount === 0) {
+            // Check "I am currently employed here" by default
+            if (isCurrentCheckbox) {
+                isCurrentCheckbox.checked = true;
+            }
+            
+            // Hide end date field
+            if (endDateGroup) {
+                endDateGroup.style.display = 'none';
+            }
+            
+            if (endDateInput) {
+                endDateInput.value = '';
+            }
+            
+            // Set start date to current month/year
+            if (startDateInput) {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                startDateInput.value = `${year}-${month}`;
+            }
+        }
+        // For subsequent entries
+        else {
+            // Hide the "currently employed" checkbox
+            if (currentEmploymentCheckbox) {
+                currentEmploymentCheckbox.style.display = 'none';
+            }
+            
+            // Make sure "currently employed" is unchecked
+            if (isCurrentCheckbox) {
+                isCurrentCheckbox.checked = false;
+            }
+            
+            // Make sure end date field is visible
+            if (endDateGroup) {
+                endDateGroup.style.display = 'block';
+            }
+            
+            // Find the previous entry's start date to set this entry's end date
+            let previousStartDate = null;
+            
+            // Get all entries with valid data
+            const entriesList = document.getElementById('entries-list');
+            const entryElements = entriesList.querySelectorAll('.entry-summary');
+            
+            // Find the most recent entry (should be the one we just added)
+            if (entryElements.length > 0) {
+                const lastEntryIndex = entryElements[entryElements.length - 1].getAttribute('data-index');
+                const lastStartDateInput = document.getElementById(`start_date_${lastEntryIndex}`);
+                
+                if (lastStartDateInput && lastStartDateInput.value) {
+                    previousStartDate = lastStartDateInput.value;
+                    
+                    // Set this entry's end date to one month before the previous entry's start date
+                    const prevStartDateParts = previousStartDate.split('-');
+                    const prevStartYear = parseInt(prevStartDateParts[0]);
+                    const prevStartMonth = parseInt(prevStartDateParts[1]);
+                    
+                    // Calculate one month before for end date
+                    let endMonth = prevStartMonth - 1;
+                    let endYear = prevStartYear;
+                    if (endMonth < 1) {
+                        endMonth = 12;
+                        endYear--;
+                    }
+                    
+                    // Format as YYYY-MM
+                    const endDateStr = `${endYear}-${endMonth.toString().padStart(2, '0')}`;
+                    
+                    // Set the end date for the new entry
+                    if (endDateInput) {
+                        endDateInput.value = endDateStr;
+                    }
+                    
+                    // Set start date to one month before the end date
+                    let newStartMonth = endMonth - 1;
+                    let newStartYear = endYear;
+                    if (newStartMonth < 1) {
+                        newStartMonth = 12;
+                        newStartYear--;
+                    }
+                    
+                    // Format as YYYY-MM
+                    const startDateStr = `${newStartYear}-${newStartMonth.toString().padStart(2, '0')}`;
+                    
+                    // Set the start date
+                    if (startDateInput) {
+                        startDateInput.value = startDateStr;
+                    }
+                }
+            }
+        }
+        
         // Add event listeners to the new entry
         setupEntryEventListeners(entryCount);
         
@@ -129,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Save the current entry and return to timeline overview
+    // Save the current entry and handle navigation
     function saveCurrentEntry() {
         const currentEntryContainer = document.getElementById('current-entry-container');
         const entry = currentEntryContainer.querySelector('.timeline-entry');
@@ -168,6 +269,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Validate form and update timeline
         validateForm();
+        
+        // If this is the first entry (index 0), go to timeline overview
+        if (parseInt(index) === 0) {
+            // Go to timeline overview (step 2)
+            goToStep(2);
+        } else {
+            // For subsequent entries, create a new entry and stay on entry form
+            createNewEntry();
+        }
         
         return true;
     }
@@ -288,10 +398,28 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const isCurrentCheckbox = document.getElementById(`is_current_${index}`);
         if (isCurrentCheckbox) {
+            // For subsequent entries (index > 0), hide the "currently employed" checkbox
+            if (parseInt(index) > 0) {
+                const currentEmploymentCheckbox = document.querySelector(`.current-employment-checkbox`);
+                if (currentEmploymentCheckbox) {
+                    currentEmploymentCheckbox.style.display = 'none';
+                }
+            }
+            
             isCurrentCheckbox.checked = entryData.isCurrent;
+            
+            // Handle end date field visibility based on "currently employed" status
+            const endDateGroup = document.querySelector(`.end-date-group`);
             if (entryData.isCurrent) {
+                if (endDateGroup) {
+                    endDateGroup.style.display = 'none';
+                }
                 const endDateInput = document.getElementById(`end_date_${index}`);
-                if (endDateInput) endDateInput.disabled = true;
+                if (endDateInput) endDateInput.value = '';
+            } else {
+                if (endDateGroup) {
+                    endDateGroup.style.display = 'block';
+                }
             }
         }
         
@@ -461,10 +589,21 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (isCurrent) {
             isCurrent.addEventListener('change', function() {
-                if (endDate) {
-                    endDate.disabled = this.checked;
-                    if (this.checked) {
+                // Find the end date group (parent container of the end date field)
+                const endDateGroup = document.querySelector('.end-date-group');
+                
+                if (this.checked) {
+                    // Hide the end date field when "currently employed" is checked
+                    if (endDateGroup) {
+                        endDateGroup.style.display = 'none';
+                    }
+                    if (endDate) {
                         endDate.value = '';
+                    }
+                } else {
+                    // Show the end date field when "currently employed" is unchecked
+                    if (endDateGroup) {
+                        endDateGroup.style.display = 'block';
                     }
                 }
                 validateForm();
@@ -740,7 +879,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const nextStep = parseInt(this.getAttribute('data-next'));
                 
                 // If going to signature step, validate timeline completion
-                if (nextStep === 3) {
+                if (nextStep === 4) {
                     const yearsAccounted = calculateYearsAccounted();
                     if (yearsAccounted < yearsRequired) {
                         alert(`Please account for at least ${yearsRequired} years before proceeding to signature.`);
@@ -748,9 +887,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
                 
-                // Validate current step before proceeding
-                if (validateStep(currentStep)) {
-                    goToStep(nextStep);
+                // If going from personal info to timeline, go to entry form instead for first entry
+                if (currentStep === 1 && nextStep === 2) {
+                    // Validate current step before proceeding
+                    if (validateStep(currentStep)) {
+                        // Create the first entry and go directly to the entry form
+                        createNewEntry();
+                        goToStep(3);
+                    }
+                } else {
+                    // Validate current step before proceeding
+                    if (validateStep(currentStep)) {
+                        goToStep(nextStep);
+                    }
                 }
             });
         });
