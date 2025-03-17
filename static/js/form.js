@@ -72,6 +72,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const addEntryBtn = document.getElementById('add-entry-btn');
         if (addEntryBtn) {
             addEntryBtn.addEventListener('click', function() {
+                // Check if the timeline is already complete
+                const yearsAccounted = calculateYearsAccounted();
+                if (yearsAccounted >= yearsRequired) {
+                    // If the timeline is complete, ask the user if they want to add another entry
+                    if (!confirm(`You've already accounted for ${yearsAccounted.toFixed(1)} years, which meets the requirement of ${yearsRequired} years. Do you still want to add another entry?`)) {
+                        return;
+                    }
+                }
+                
                 // Go to entry form (step 3)
                 createNewEntry();
                 goToStep(3);
@@ -182,56 +191,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (lastStartDateInput && lastStartDateInput.value) {
                     previousStartDate = lastStartDateInput.value;
                     
-                    // Get the previous entry's end date
-                    const lastEndDateInput = document.getElementById(`end_date_${lastEntryIndex}`);
-                    const lastIsCurrentInput = document.getElementById(`is_current_${lastEntryIndex}`);
-                    
-                    // If the previous entry is current employment, we need to calculate an end date
-                    let endDateStr;
-                    if (lastIsCurrentInput && lastIsCurrentInput.checked) {
-                        // For current employment, use the start date minus one month
-                        const prevStartDateParts = previousStartDate.split('-');
-                        const prevStartYear = parseInt(prevStartDateParts[0]);
-                        const prevStartMonth = parseInt(prevStartDateParts[1]);
-                        
-                        // Calculate one month before for end date
-                        let endMonth = prevStartMonth - 1;
-                        let endYear = prevStartYear;
-                        if (endMonth < 1) {
-                            endMonth = 12;
-                            endYear--;
-                        }
-                        
-                        // Format as YYYY-MM
-                        endDateStr = `${endYear}-${endMonth.toString().padStart(2, '0')}`;
-                    } else if (lastEndDateInput && lastEndDateInput.value) {
-                        // Use the previous entry's end date directly
-                        endDateStr = lastEndDateInput.value;
-                    } else {
-                        // Fallback: use previous start date minus one month
-                        const prevStartDateParts = previousStartDate.split('-');
-                        const prevStartYear = parseInt(prevStartDateParts[0]);
-                        const prevStartMonth = parseInt(prevStartDateParts[1]);
-                        
-                        // Calculate one month before for end date
-                        let endMonth = prevStartMonth - 1;
-                        let endYear = prevStartYear;
-                        if (endMonth < 1) {
-                            endMonth = 12;
-                            endYear--;
-                        }
-                        
-                        // Format as YYYY-MM
-                        endDateStr = `${endYear}-${endMonth.toString().padStart(2, '0')}`;
-                    }
+                    // Use the previous entry's start date as the end date for this entry
+                    const endDateStr = previousStartDate;
+                    console.log("Setting end date to previous start date:", endDateStr);
                     
                     // Set the end date for the new entry
                     if (endDateInput) {
                         endDateInput.value = endDateStr;
                     }
                     
-                    // Set start date to the same as the end date
-                    const startDateStr = endDateStr;
+                    // Set start date to one month before the end date
+                    const endDateParts = endDateStr.split('-');
+                    const endYear = parseInt(endDateParts[0]);
+                    const endMonth = parseInt(endDateParts[1]);
+                    
+                    // Calculate one month before for start date
+                    let startMonth = endMonth - 1;
+                    let startYear = endYear;
+                    if (startMonth < 1) {
+                        startMonth = 12;
+                        startYear--;
+                    }
+                    
+                    // Format as YYYY-MM
+                    const startDateStr = `${startYear}-${startMonth.toString().padStart(2, '0')}`;
+                    console.log("Setting start date to one month before end date:", startDateStr);
                     
                     // Set the start date
                     if (startDateInput) {
@@ -293,13 +277,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Validate form and update timeline
         validateForm();
         
-        // If this is the first entry (index 0), go to timeline overview
-        if (parseInt(index) === 0) {
-            // Go to timeline overview (step 2)
-            goToStep(2);
-        } else {
-            // For subsequent entries, create a new entry and stay on entry form
-            createNewEntry();
+        // After saving any entry, go to timeline overview
+        goToStep(2);
+        
+        // Check if the timeline is complete
+        const yearsAccounted = calculateYearsAccounted();
+        if (yearsAccounted >= yearsRequired) {
+            // If the timeline is complete, show a message suggesting to proceed to signature
+            alert(`You've accounted for ${yearsAccounted.toFixed(1)} years, which meets the requirement of ${yearsRequired} years. You can now proceed to the signature step.`);
         }
         
         return true;
