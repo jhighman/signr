@@ -99,16 +99,22 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Create a new timeline entry
     function createNewEntry() {
+        console.log("Creating new entry with entryCount:", entryCount);
+        
         const template = document.getElementById('timeline-entry-template').innerHTML;
         const currentEntryContainer = document.getElementById('current-entry-container');
         
         // Clear any existing content
         currentEntryContainer.innerHTML = '';
         
+        // Get the current entry index
+        const currentIndex = entryCount;
+        console.log("Using currentIndex:", currentIndex);
+        
         // Replace placeholders in template
         let entryHtml = template
-            .replace(/{index}/g, entryCount)
-            .replace(/{index_plus_one}/g, entryCount + 1);
+            .replace(/{index}/g, currentIndex)
+            .replace(/{index_plus_one}/g, currentIndex + 1);
         
         // Create temporary container to hold the HTML
         const tempDiv = document.createElement('div');
@@ -118,14 +124,14 @@ document.addEventListener('DOMContentLoaded', function() {
         currentEntryContainer.appendChild(tempDiv.firstElementChild);
         
         // Get the current entry elements
-        const isCurrentCheckbox = document.getElementById(`is_current_${entryCount}`);
+        const isCurrentCheckbox = document.getElementById(`is_current_${currentIndex}`);
         const currentEmploymentCheckbox = document.querySelector(`.current-employment-checkbox`);
         const endDateGroup = document.querySelector(`.end-date-group`);
-        const endDateInput = document.getElementById(`end_date_${entryCount}`);
-        const startDateInput = document.getElementById(`start_date_${entryCount}`);
+        const endDateInput = document.getElementById(`end_date_${currentIndex}`);
+        const startDateInput = document.getElementById(`start_date_${currentIndex}`);
         
         // For the first entry (current employment)
-        if (entryCount === 0) {
+        if (currentIndex === 0) {
             // Check "I am currently employed here" by default
             if (isCurrentCheckbox) {
                 isCurrentCheckbox.checked = true;
@@ -140,16 +146,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 endDateInput.value = '';
             }
             
-            // Set start date to current month/year
-            if (startDateInput) {
-                const now = new Date();
-                const year = now.getFullYear();
-                const month = (now.getMonth() + 1).toString().padStart(2, '0');
-                startDateInput.value = `${year}-${month}`;
-            }
+            // Do not set a default start date for the first entry
         }
         // For subsequent entries
         else {
+            console.log("Creating subsequent entry with index:", currentIndex);
+            
             // Hide the "currently employed" checkbox
             if (currentEmploymentCheckbox) {
                 currentEmploymentCheckbox.style.display = 'none';
@@ -221,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Add event listeners to the new entry
-        setupEntryEventListeners(entryCount);
+        setupEntryEventListeners(currentIndex);
         
         // Focus on the first field
         const firstField = currentEntryContainer.querySelector('select, input, textarea');
@@ -232,12 +234,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Save the current entry and handle navigation
     function saveCurrentEntry() {
+        console.log("Saving entry with entryCount before save:", entryCount);
+        
         const currentEntryContainer = document.getElementById('current-entry-container');
         const entry = currentEntryContainer.querySelector('.timeline-entry');
         
         if (!entry) return false;
         
         const index = entry.getAttribute('data-index');
+        console.log("Entry index being saved:", index);
         
         // Validate the entry
         if (!validateEntry(entry)) {
@@ -262,10 +267,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add to entries list or update existing
         updateEntriesList(entryData);
         
-        // Increment entry count for new entries
-        if (parseInt(index) === entryCount - 1) {
-            entryCount++;
-        }
+        // Always increment entry count after saving
+        entryCount++;
+        console.log("entryCount after increment:", entryCount);
         
         // Validate form and update timeline
         validateForm();
