@@ -7,11 +7,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <div class="container">
-        <header>
+        <header role="banner">
             <div class="logo-container">
-                <div class="logo">
+                <div class="logo" aria-hidden="true">
                     <svg class="logo-image" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <title>Trua Verify Logo</title>
                         <circle cx="50" cy="50" r="40" fill="#f8f9fa" stroke="#1a2b5a" stroke-width="2" />
                         <path d="M50 20 A30 30 0 0 1 80 50 L50 50 Z" fill="#1a2b5a" />
                         <path d="M50 50 L50 80 A30 30 0 0 1 20 50 Z" fill="#5a8eff" />
@@ -19,14 +21,18 @@
                 </div>
                 <div class="tagline">Truth, Trust & Ownership</div>
             </div>
-            <div class="step-indicator" id="step-indicator">Step 1 of 3: Personal Information</div>
+            <div class="step-indicator" id="step-indicator" aria-live="polite">Step 1 of {% if degree_required %}4{% else %}3{% endif %}: Personal Information</div>
         </header>
         
-        <main>
-            <form id="employmentForm" action="{{ url_for('submit') }}" method="POST">
+        <main id="main-content" role="main">
+            <form id="employmentForm" action="{{ url_for('submit') }}" method="POST" novalidate aria-describedby="form-description">
+                <div id="form-description" class="sr-only">
+                    This form collects your employment history information. It is divided into multiple steps including personal information, employment timeline, {% if degree_required %}degree verification, {% endif %}and signature.
+                </div>
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="tracking_id" value="{{ tracking_id }}">
                 <input type="hidden" name="years" value="{{ years }}">
+                <input type="hidden" name="degree_required" value="{{ degree_required|lower }}">
                 
                 <!-- Multi-step form with navigation -->
                 <div class="form-steps">
@@ -34,23 +40,29 @@
                     <section class="form-section" id="step-1" data-step="1">
                         <h2>Personal Information</h2>
                         <div class="form-group">
-                            <label for="full_name">Full Name *</label>
-                            <input type="text" id="full_name" name="full_name" required>
+                            <label for="full_name">Full Name <span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                            <input type="text" id="full_name" name="full_name" required aria-required="true" autocomplete="name">
                         </div>
                         
                         <div class="form-group">
-                            <label for="email">Email *</label>
-                            <input type="email" id="email" name="email" required>
+                            <label for="email">Email <span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                            <input type="email" id="email" name="email" required aria-required="true" autocomplete="email">
                         </div>
                         
                         <div class="form-group">
-                            <label for="phone">Phone (optional)</label>
-                            <input type="tel" id="phone" name="phone" placeholder="555-987-6543">
+                            <label for="phone">Phone <span class="sr-only">optional</span></label>
+                            <input type="tel" id="phone" name="phone" placeholder="555-987-6543" autocomplete="tel" aria-required="false">
                         </div>
                         
                         <div class="form-group">
-                            <label>Timeframe</label>
-                            <div class="static-field">Last {{ years }} Years</div>
+                            <label>Verification Type</label>
+                            <div class="static-field">
+                                {% if years == '0' %}
+                                Employment Verification (single employer)
+                                {% else %}
+                                Last {{ years }} Years
+                                {% endif %}
+                            </div>
                         </div>
                         
                         <div class="form-navigation">
@@ -61,13 +73,19 @@
                     <!-- Step 2: Timeline Overview -->
                     <section class="form-section" id="step-2" data-step="2" style="display: none;">
                         <h2>Employment Timeline</h2>
-                        <p>Please account for the last {{ years }} years of your employment history, including any gaps.</p>
+                        <p>
+                            {% if years == '0' %}
+                            Please provide details about your employment.
+                            {% else %}
+                            Please account for the last {{ years }} years of your employment history, including any gaps.
+                            {% endif %}
+                        </p>
                         
-                        <div class="timeline-visualization">
-                            <h3>Timeline Coverage</h3>
-                            <div class="timeline-container">
+                        <div class="timeline-visualization" aria-labelledby="timeline-heading">
+                            <h3 id="timeline-heading">Timeline Coverage</h3>
+                            <div class="timeline-container" role="img" aria-label="Visual representation of your employment timeline">
                                 <div class="timeline-ruler"></div>
-                                <div id="timeline-segments"></div>
+                                <div id="timeline-segments" aria-hidden="true"></div>
                                 <div class="timeline-labels">
                                     <div class="timeline-start-label">Now - <span id="timeline-start-year"></span></div>
                                     <div class="timeline-end-label"><span id="timeline-end-year"></span></div>
@@ -75,11 +93,11 @@
                             </div>
                         </div>
                         
-                        <div class="time-accounted">
+                        <div class="time-accounted" aria-live="polite">
                             <span>Time accounted for: </span>
                             <span id="years-accounted">0</span>
                             <span> years</span>
-                            <div id="time-validation" class="validation-message"></div>
+                            <div id="time-validation" class="validation-message" aria-live="assertive"></div>
                         </div>
                         
                         <div class="entries-summary" id="entries-summary">
@@ -93,7 +111,13 @@
                         <div class="form-navigation">
                             <button type="button" class="button secondary prev-step" data-prev="1">Previous: Personal Information</button>
                             <button type="button" class="button secondary" id="add-entry-btn">Add Employment Entry</button>
-                            <button type="button" class="button primary next-step" id="to-signature-btn" data-next="4" disabled>Next: Signature</button>
+                            <button type="button" class="button primary next-step" id="to-signature-btn" data-next="{% if degree_required %}5{% else %}4{% endif %}" disabled>
+                                {% if degree_required %}
+                                Next: Degree Verification
+                                {% else %}
+                                Next: Signature
+                                {% endif %}
+                            </button>
                         </div>
                     </section>
                     
@@ -112,20 +136,68 @@
                         </div>
                     </section>
                     
-                    <!-- Step 4: Signature -->
-                    <section class="form-section signature-section" id="step-4" data-step="4" style="display: none;">
-                        <h2>Attestation & Signature</h2>
-                        <p class="attestation">I, <span id="attestation-name"></span>, certify that the employment information provided is accurate and complete to the best of my knowledge.</p>
+                    <!-- Step 4/5: Degree Verification (only shown if degree_required is true) -->
+                    <section class="form-section" id="step-5" data-step="5" style="display: none;" aria-labelledby="degree-verification-heading">
+                        <h2 id="degree-verification-heading">Degree Verification</h2>
+                        <p>Please provide information about your highest degree.</p>
+                        
+                        <div class="form-group">
+                            <label for="school_name">School Name <span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                            <input type="text" id="school_name" name="school_name" required aria-required="true" autocomplete="organization">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="degree_level">Degree Level <span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                            <select id="degree_level" name="degree_level" required aria-required="true">
+                                <option value="">Select a degree level</option>
+                                <option value="Associate">Associate</option>
+                                <option value="Bachelor's">Bachelor's</option>
+                                <option value="Master's">Master's</option>
+                                <option value="Doctorate">Doctorate</option>
+                                <option value="Certificate">Certificate</option>
+                                <option value="Diploma">Diploma</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="degree_title">Degree Title <span class="sr-only">optional</span></label>
+                            <input type="text" id="degree_title" name="degree_title" placeholder="e.g., Bachelor of Science" aria-required="false">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="major">Major <span class="sr-only">optional</span></label>
+                            <input type="text" id="major" name="major" placeholder="e.g., Computer Science" aria-required="false">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="award_year">Award Year <span class="sr-only">optional</span></label>
+                            <input type="text" id="award_year" name="award_year" placeholder="e.g., 2023" pattern="[0-9]{4}" aria-required="false" aria-describedby="award-year-hint">
+                            <div id="award-year-hint" class="sr-only">Enter a 4-digit year, for example 2023</div>
+                        </div>
+                        
+                        <div class="form-navigation">
+                            <button type="button" class="button secondary prev-step" data-prev="2">Previous: Employment Timeline</button>
+                            <button type="button" class="button primary next-step" data-next="4">Next: Signature</button>
+                        </div>
+                    </section>
+                    
+                    <!-- Step 4/6: Signature -->
+                    <section class="form-section signature-section" id="step-4" data-step="4" style="display: none;" aria-labelledby="signature-heading">
+                        <h2 id="signature-heading">Attestation & Signature</h2>
+                        <p class="attestation" aria-live="polite">I, <span id="attestation-name"></span>, certify that the employment information provided is accurate and complete to the best of my knowledge.</p>
                         
                         <div class="signature-container">
-                            <canvas id="signature-canvas" width="400" height="200"></canvas>
-                            <button type="button" id="clear-signature" class="button secondary">Clear Signature</button>
+                            <label for="signature-canvas" class="sr-only">Draw your signature here</label>
+                            <canvas id="signature-canvas" width="400" height="200" aria-label="Signature pad" role="application"></canvas>
+                            <div id="signature-instructions" class="sr-only">Use your mouse or finger to draw your signature in the box above. If you make a mistake, use the Clear Signature button.</div>
+                            <button type="button" id="clear-signature" class="button secondary" aria-label="Clear signature and start over">Clear Signature</button>
                         </div>
                         
                         <input type="hidden" id="signature_data" name="signature_data">
                         
                         <div class="form-group checkbox">
-                            <input type="checkbox" id="legal-acknowledgment" required>
+                            <input type="checkbox" id="legal-acknowledgment" required aria-required="true">
                             <label for="legal-acknowledgment">I understand this electronic signature is legally binding.</label>
                         </div>
                         
@@ -147,13 +219,13 @@
     <template id="timeline-entry-template">
         <div class="timeline-entry" data-index="{index}">
             <div class="entry-header">
-                <h3>Timeline Entry #{index_plus_one}</h3>
-                <button type="button" class="remove-entry" data-index="{index}">Remove</button>
+                <h3 id="entry-heading-{index}">Timeline Entry #{index_plus_one}</h3>
+                <button type="button" class="remove-entry" data-index="{index}" aria-label="Remove this entry">Remove</button>
             </div>
             
             <div class="form-group">
-                <label for="entry_type_{index}">Entry Type *</label>
-                <select id="entry_type_{index}" name="entry_type_{index}" class="entry-type" required>
+                <label for="entry_type_{index}">Entry Type <span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                <select id="entry_type_{index}" name="entry_type_{index}" class="entry-type" required aria-required="true">
                     <option value="Job">Job</option>
                     <option value="Unemployed">Unemployed/Gap</option>
                     <option value="Education">Education</option>
@@ -163,46 +235,47 @@
             
             <div class="job-fields">
                 <div class="form-group">
-                    <label for="company_{index}">Company/Organization *</label>
-                    <input type="text" id="company_{index}" name="company_{index}" class="company-field" required>
+                    <label for="company_{index}">Company/Organization <span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                    <input type="text" id="company_{index}" name="company_{index}" class="company-field" required aria-required="true" autocomplete="organization">
                 </div>
                 
                 <div class="form-group">
-                    <label for="position_{index}">Position/Title *</label>
-                    <input type="text" id="position_{index}" name="position_{index}" class="position-field" required>
+                    <label for="position_{index}">Position/Title <span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                    <input type="text" id="position_{index}" name="position_{index}" class="position-field" required aria-required="true" autocomplete="organization-title">
                 </div>
             </div>
             
             <div class="form-group checkbox current-employment-checkbox">
-                <input type="checkbox" id="is_current_{index}" name="is_current_{index}" class="is-current">
+                <input type="checkbox" id="is_current_{index}" name="is_current_{index}" class="is-current" aria-controls="end_date_{index}">
                 <label for="is_current_{index}">I am currently employed here</label>
             </div>
             
             <div class="form-group">
-                <label for="start_date_{index}">Start Month *</label>
-                <input type="month" id="start_date_{index}" name="start_date_{index}" class="date-field start-date" required>
+                <label for="start_date_{index}">Start Month <span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                <input type="month" id="start_date_{index}" name="start_date_{index}" class="date-field start-date" required aria-required="true">
             </div>
             
             <div class="form-group end-date-group">
-                <label for="end_date_{index}">End Month *</label>
-                <input type="month" id="end_date_{index}" name="end_date_{index}" class="date-field end-date" required>
+                <label for="end_date_{index}">End Month <span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                <input type="month" id="end_date_{index}" name="end_date_{index}" class="date-field end-date" aria-describedby="end-date-hint-{index}">
+                <div id="end-date-hint-{index}" class="sr-only">This field is not required if you are currently employed here</div>
             </div>
             
             <div class="contact-fields">
                 <div class="form-group">
-                    <label for="contact_name_{index}">Contact Name *</label>
-                    <input type="text" id="contact_name_{index}" name="contact_name_{index}" class="contact-name-field" required>
+                    <label for="contact_name_{index}">Contact Name <span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                    <input type="text" id="contact_name_{index}" name="contact_name_{index}" class="contact-name-field" required aria-required="true">
                 </div>
                 
                 <div class="form-group">
-                    <label for="contact_info_{index}">Contact Email/Phone *</label>
-                    <input type="text" id="contact_info_{index}" name="contact_info_{index}" class="contact-info-field" required>
+                    <label for="contact_info_{index}">Contact Email/Phone <span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                    <input type="text" id="contact_info_{index}" name="contact_info_{index}" class="contact-info-field" required aria-required="true">
                 </div>
             </div>
             
             <div class="form-group">
-                <label for="description_{index}">Description/Details (optional)</label>
-                <textarea id="description_{index}" name="description_{index}" class="description-field"></textarea>
+                <label for="description_{index}">Description/Details <span class="sr-only">optional</span></label>
+                <textarea id="description_{index}" name="description_{index}" class="description-field" aria-required="false"></textarea>
             </div>
         </div>
     </template>
