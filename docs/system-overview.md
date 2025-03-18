@@ -28,31 +28,36 @@ Trua Verify provides the following core functionality:
 
 1. **Invitation-based Access**: Candidates access the system via a unique URL containing a tracking ID and timeframe parameter.
 
-2. **Employment Timeline Creation**: Candidates can add multiple types of timeline entries:
+2. **Multi-language Support**: The system supports multiple languages (English, Spanish, French, and Italian) with a language switcher, allowing candidates to complete the process in their preferred language.
+
+3. **Employment Timeline Creation**: Candidates can add multiple types of timeline entries:
    - Jobs (with company, position, dates, and contact information)
    - Education periods
    - Unemployment gaps
    - Other relevant periods
 
-3. **Timeline Visualization**: The system provides an interactive visual representation of the timeline, showing coverage and gaps, helping candidates understand their progress toward meeting the timeframe requirement.
+4. **Timeline Visualization**: The system provides an interactive visual representation of the timeline, showing coverage and gaps, helping candidates understand their progress toward meeting the timeframe requirement.
 
-4. **Timeframe Validation**: The system calculates the total time accounted for and ensures it meets the required timeframe, with real-time feedback to the candidate.
+5. **Timeframe Validation**: The system calculates the total time accounted for and ensures it meets the required timeframe, with real-time feedback to the candidate.
 
-5. **Digital Signature**: Candidates sign their submission using a canvas-based signature capture powered by the signature_pad.js library.
+6. **Education Verification**: When required, the system collects detailed information about the candidate's educational background, including school name, degree level, major, and award year.
 
-6. **Document Generation**: The system generates both PDF and JSON versions of the claim for different verification needs.
+7. **Digital Signature**: Candidates sign their submission using a canvas-based signature capture powered by the signature_pad.js library.
 
-7. **Claim Storage**: All submissions are stored with a unique tracking ID for future reference.
+8. **Document Generation**: The system generates both PDF and JSON versions of the claim for different verification needs.
+
+9. **Claim Storage**: All submissions are stored with a unique tracking ID for future reference.
 
 ## Current Implementation
 
 The current implementation is a Flask-based web application with:
 
-- A four-step user flow (landing page, personal information, timeline entries, signature & submission)
+- A multi-step user flow (landing page, personal information, timeline entries, optional degree verification, signature & submission)
 - Interactive timeline visualization with real-time validation
 - Comprehensive client-side validation for data completeness and timeframe coverage
 - Server-side processing and document generation
 - CSRF protection using Flask-WTF
+- Internationalization (i18n) using Flask-Babel with support for multiple languages
 - Responsive design for various device sizes
 - File-based storage in the claims directory
 
@@ -64,6 +69,8 @@ All core functionality is fully implemented and operational. The system successf
 - Captures digital signatures
 - Generates both PDF and JSON documents
 - Provides a confirmation page with download capability
+- Supports multiple languages (English, Spanish, French, Italian)
+- Collects and verifies education credentials when required
 
 For a detailed breakdown of implementation status, see [Implementation Status](./implementation-status.md).
 

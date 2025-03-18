@@ -14,6 +14,20 @@ Trua Verify is a web-based system that allows you to submit your employment hist
 2. The link will look something like: `http://localhost:5000/verify?tracking_id=abc123&years=7`
 3. Click on the link to access the Trua Verify system.
 
+### Language Selection
+
+Trua Verify supports multiple languages:
+1. English (default)
+2. Spanish (Español)
+3. French (Français)
+4. Italian (Italiano)
+
+To change the language:
+1. Use the language dropdown in the top-right corner of any page
+2. Select your preferred language
+3. The page will refresh with all text translated to your selected language
+4. Your language preference will be remembered for future visits
+
 ### Landing Page
 
 Upon accessing the system, you will see a welcome page that:
@@ -72,10 +86,28 @@ This step allows you to build a comprehensive timeline of your employment histor
    - The system will show "Time accounted for: X.X years" to help you track your progress
    - You need to account for at least the required timeframe (e.g., 7 years)
 
-6. Once you've covered the required timeframe, the "Next: Signature" button will be enabled
-   - Click this button to proceed to the final step
+6. Once you've covered the required timeframe, the "Next" button will be enabled
+   - Click this button to proceed to the next step (either Degree Verification or Signature, depending on your verification requirements)
 
-### Step 3: Attestation & Signature
+### Step 3: Degree Verification (if required)
+
+If your verification requires degree information, you'll see this additional step:
+
+1. Enter your school name (required)
+2. Select your degree level from the dropdown (required):
+   - Associate
+   - Bachelor's
+   - Master's
+   - Doctorate
+   - Certificate
+   - Diploma
+   - Other
+3. Enter your degree title (optional, e.g., "Bachelor of Science")
+4. Enter your major or field of study (optional)
+5. Enter the year you were awarded the degree (optional)
+6. Click "Next: Signature" to proceed to the final step
+
+### Step 4: Attestation & Signature
 
 1. Review the attestation statement, which confirms that the information you've provided is accurate
 2. Sign in the signature box by drawing your signature with your mouse or finger (on touch devices)

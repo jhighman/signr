@@ -38,6 +38,7 @@ The main Flask application handles:
 - Form processing and validation
 - PDF and JSON generation
 - File storage
+- Internationalization (i18n) with Flask-Babel
 
 Key routes:
 - `/` - Redirects to verify
@@ -45,6 +46,7 @@ Key routes:
 - `/form` - Employment form
 - `/submit` - Form processing
 - `/download/<filename>` - PDF retrieval
+- `/translations/<lang>` - API endpoint for JavaScript translations
 
 ### Frontend
 
@@ -103,7 +105,8 @@ The form is implemented as a single HTML page with multiple sections that are sh
 - Step 1: Personal Information
 - Step 2: Timeline Overview
 - Step 3: Entry Form (for adding/editing individual entries)
-- Step 4: Attestation & Signature
+- Step 4: Degree Verification (optional, shown when degree_required is true)
+- Step 5: Attestation & Signature
 
 Navigation between steps is handled by the `goToStep()` function in `form.js`.
 
@@ -148,6 +151,61 @@ The system includes:
 - CSRF protection using Flask-WTF
 - Input validation on both client and server sides
 - Secure file naming conventions
+
+### Internationalization (i18n)
+
+The system supports multiple languages through Flask-Babel:
+
+#### Backend Configuration
+- Flask-Babel is configured in app.py
+- Locale selector function determines the user's preferred language from:
+  - URL parameters (e.g., ?lang=es)
+  - Session storage
+  - Browser's Accept-Language header
+- Supported languages: English (en), Spanish (es), French (fr), Italian (it)
+
+#### Translation Files
+- Translation files are stored in the `translations` directory
+- Each language has its own subdirectory (e.g., `translations/es/LC_MESSAGES/`)
+- Messages are extracted from templates and Python files using Babel
+- Translation files follow the gettext PO format
+
+#### Template Integration
+- Templates use the `_()` function to mark translatable strings
+- Example: `{{ _('Personal Information') }}`
+- Complex phrases are broken down into smaller translatable units
+
+#### JavaScript Integration
+- JavaScript translations are provided via the `/translations/<lang>` API endpoint
+- The frontend fetches translations based on the current language
+- Client-side strings are translated using a helper function
+
+#### Adding a New Language
+1. Create a new language file: `pybabel init -i translations/messages.pot -d translations -l <language_code>`
+2. Add translations to the .po file
+3. Compile translations: `pybabel compile -d translations`
+4. Add the language to the language selector in form.html
+5. Add translations for JavaScript strings in app.py
+
+### Degree Verification
+
+The system includes optional degree verification functionality:
+
+#### Configuration
+- Degree verification is enabled by passing `degreeRequired=true` in the URL
+- When enabled, an additional step is shown in the form
+
+#### Form Fields
+- School Name
+- Degree Level (Associate, Bachelor's, Master's, Doctorate, etc.)
+- Degree Title
+- Major
+- Award Year
+
+#### Implementation
+- The degree verification step is conditionally shown based on the `degree_required` parameter
+- Form navigation adapts to include or skip this step
+- PDF generation includes a dedicated section for degree information when present
 
 ## Extending the System
 

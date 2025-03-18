@@ -23,10 +23,8 @@ csrf = CSRFProtect(app)
 # Configure Flask-Babel
 app.config['BABEL_DEFAULT_LOCALE'] = 'en'
 app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
-babel = Babel(app)
 
 # Language selector function
-@babel.localeselector
 def get_locale():
     # Try to get the language from the URL parameter
     lang = request.args.get('lang')
@@ -40,6 +38,8 @@ def get_locale():
     
     # Try to get the language from the Accept-Language header
     return request.accept_languages.best_match(['en', 'es', 'fr', 'it'])
+
+babel = Babel(app, locale_selector=get_locale)
 
 # CSRF error handler
 @app.errorhandler(CSRFError)
@@ -59,14 +59,86 @@ def index():
 def verify():
     tracking_id = request.args.get('tracking_id', '')
     years = request.args.get('years', '7')
-    return render_template('index.html', tracking_id=tracking_id, years=years)
+    return render_template('index.html', tracking_id=tracking_id, years=years, lang=get_locale())
 
 @app.route('/form')
 def form():
     tracking_id = request.args.get('tracking_id', '')
     years = request.args.get('years', '7')
     degree_required = request.args.get('degreeRequired', 'false').lower() == 'true'
-    return render_template('form.html', tracking_id=tracking_id, years=years, degree_required=degree_required)
+    return render_template('form.html', tracking_id=tracking_id, years=years, degree_required=degree_required, lang=get_locale())
+
+@app.route('/translations/<lang>')
+def get_translations(lang):
+    """API endpoint to get translations for JavaScript"""
+    if lang not in ['en', 'es', 'fr', 'it']:
+        lang = 'en'
+    
+    # Define translations for JavaScript
+    translations = {
+        'en': {
+            'errorSavingEntry': 'An error occurred while saving the entry. Please try again.',
+            'noEntryFound': 'Error: No entry found to save. Please try again or refresh the page.',
+            'pleaseAddEmployer': 'Please add at least one employer before proceeding.',
+            'accountForYears': 'Please account for at least {0} years before proceeding.',
+            'startBeforeEnd': 'Start month must be before end month for entry #{0}',
+            'confirmDeleteTitle': 'Confirm Deletion',
+            'confirmDeleteDesc': 'Are you sure you want to delete this entry?',
+            'cancel': 'Cancel',
+            'delete': 'Delete',
+            'entryDeleted': 'Entry deleted',
+            'addAnotherTitle': 'Add Another Entry?',
+            'addAnotherDesc': 'You\'ve already accounted for {0} years, which meets the requirement of {1} years. Do you still want to add another entry?',
+            'addEntry': 'Add Entry'
+        },
+        'es': {
+            'errorSavingEntry': 'Se produjo un error al guardar la entrada. Por favor, inténtelo de nuevo.',
+            'noEntryFound': 'Error: No se encontró ninguna entrada para guardar. Inténtelo de nuevo o actualice la página.',
+            'pleaseAddEmployer': 'Por favor, añada al menos un empleador antes de continuar.',
+            'accountForYears': 'Por favor, tenga en cuenta al menos {0} años antes de continuar.',
+            'startBeforeEnd': 'El mes de inicio debe ser anterior al mes de finalización para la entrada #{0}',
+            'confirmDeleteTitle': 'Confirmar Eliminación',
+            'confirmDeleteDesc': '¿Está seguro de que desea eliminar esta entrada?',
+            'cancel': 'Cancelar',
+            'delete': 'Eliminar',
+            'entryDeleted': 'Entrada eliminada',
+            'addAnotherTitle': '¿Añadir Otra Entrada?',
+            'addAnotherDesc': 'Ya ha contabilizado {0} años, lo que cumple con el requisito de {1} años. ¿Desea añadir otra entrada?',
+            'addEntry': 'Añadir Entrada'
+        },
+        'fr': {
+            'errorSavingEntry': 'Une erreur s\'est produite lors de l\'enregistrement de l\'entrée. Veuillez réessayer.',
+            'noEntryFound': 'Erreur : Aucune entrée trouvée à enregistrer. Veuillez réessayer ou actualiser la page.',
+            'pleaseAddEmployer': 'Veuillez ajouter au moins un employeur avant de continuer.',
+            'accountForYears': 'Veuillez tenir compte d\'au moins {0} ans avant de continuer.',
+            'startBeforeEnd': 'Le mois de début doit être antérieur au mois de fin pour l\'entrée #{0}',
+            'confirmDeleteTitle': 'Confirmer la Suppression',
+            'confirmDeleteDesc': 'Êtes-vous sûr de vouloir supprimer cette entrée ?',
+            'cancel': 'Annuler',
+            'delete': 'Supprimer',
+            'entryDeleted': 'Entrée supprimée',
+            'addAnotherTitle': 'Ajouter une Autre Entrée ?',
+            'addAnotherDesc': 'Vous avez déjà comptabilisé {0} années, ce qui répond à l\'exigence de {1} années. Voulez-vous ajouter une autre entrée ?',
+            'addEntry': 'Ajouter une Entrée'
+        },
+        'it': {
+            'errorSavingEntry': 'Si è verificato un errore durante il salvataggio dell\'inserimento. Si prega di riprovare.',
+            'noEntryFound': 'Errore: Nessun inserimento trovato da salvare. Riprova o aggiorna la pagina.',
+            'pleaseAddEmployer': 'Si prega di aggiungere almeno un datore di lavoro prima di procedere.',
+            'accountForYears': 'Si prega di considerare almeno {0} anni prima di procedere.',
+            'startBeforeEnd': 'Il mese di inizio deve essere precedente al mese di fine per l\'inserimento #{0}',
+            'confirmDeleteTitle': 'Conferma Eliminazione',
+            'confirmDeleteDesc': 'Sei sicuro di voler eliminare questo inserimento?',
+            'cancel': 'Annulla',
+            'delete': 'Elimina',
+            'entryDeleted': 'Inserimento eliminato',
+            'addAnotherTitle': 'Aggiungere un Altro Inserimento?',
+            'addAnotherDesc': 'Hai già contabilizzato {0} anni, che soddisfa il requisito di {1} anni. Vuoi aggiungere un altro inserimento?',
+            'addEntry': 'Aggiungi Inserimento'
+        }
+    }
+    
+    return jsonify(translations.get(lang, translations['en']))
 
 @app.route('/submit', methods=['POST'])
 def submit():

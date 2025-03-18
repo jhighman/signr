@@ -6,6 +6,8 @@ This folder contains comprehensive documentation for the Trua Verify system, whi
 
 1. [System Overview](./system-overview.md) - High-level description of the system
 2. [Implementation Status](./implementation-status.md) - Current state of development and planned features
+   - Now includes internationalization (i18n) support for multiple languages
+   - Added education verification functionality
 
 ## Design Documentation
 

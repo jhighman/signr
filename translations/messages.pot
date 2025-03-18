@@ -1,0 +1,63 @@
+# Translations template for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-03-17 20:53-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: templates/form.html:50
+msgid "Personal Information"
+msgstr ""
+
+#: templates/form.html:52
+msgid "Full Name"
+msgstr ""
+
+#: templates/form.html:52 templates/form.html:57
+msgid "required"
+msgstr ""
+
+#: templates/form.html:57
+msgid "Email"
+msgstr ""
+
+#: templates/form.html:62
+msgid "Phone"
+msgstr ""
+
+#: templates/form.html:62
+msgid "optional"
+msgstr ""
+
+#: templates/form.html:67
+msgid "Verification Type"
+msgstr ""
+
+#: templates/form.html:70
+msgid "Employment Verification (single employer)"
+msgstr ""
+
+#: templates/form.html:72
+msgid "Last"
+msgstr ""
+
+#: templates/form.html:72
+msgid "Years"
+msgstr ""
+
+#: templates/form.html:78
+msgid "Next: Employment Timeline"
+msgstr ""
+

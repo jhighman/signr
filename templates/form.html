@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,13 +21,22 @@
                 </div>
                 <div class="tagline">Truth, Trust & Ownership</div>
             </div>
-            <div class="step-indicator" id="step-indicator" aria-live="polite">Step 1 of {% if degree_required %}4{% else %}3{% endif %}: Personal Information</div>
+            <div class="language-switcher">
+                <label for="language-select" class="sr-only">Select Language</label>
+                <select id="language-select" aria-label="Select Language">
+                    <option value="en" {% if lang == 'en' %}selected{% endif %}>English</option>
+                    <option value="es" {% if lang == 'es' %}selected{% endif %}>Español</option>
+                    <option value="fr" {% if lang == 'fr' %}selected{% endif %}>Français</option>
+                    <option value="it" {% if lang == 'it' %}selected{% endif %}>Italiano</option>
+                </select>
+            </div>
+            <div class="step-indicator" id="step-indicator" aria-live="polite">{{ _('Step') }} 1 {{ _('of') }} {% if degree_required %}4{% else %}3{% endif %}: {{ _('Personal Information') }}</div>
         </header>
         
         <main id="main-content" role="main">
             <form id="employmentForm" action="{{ url_for('submit') }}" method="POST" novalidate aria-describedby="form-description">
                 <div id="form-description" class="sr-only">
-                    This form collects your employment history information. It is divided into multiple steps including personal information, employment timeline, {% if degree_required %}degree verification, {% endif %}and signature.
+                    {{ _('This form collects your employment history information. It is divided into multiple steps including personal information, employment timeline,') }} {% if degree_required %}{{ _('degree verification,') }} {% endif %}{{ _('and signature.') }}
                 </div>
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="tracking_id" value="{{ tracking_id }}">
@@ -38,84 +47,84 @@
                 <div class="form-steps">
                     <!-- Step 1: Personal Information -->
                     <section class="form-section" id="step-1" data-step="1">
-                        <h2>Personal Information</h2>
+                        <h2>{{ _('Personal Information') }}</h2>
                         <div class="form-group">
-                            <label for="full_name">Full Name <span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                            <label for="full_name">{{ _('Full Name') }} <span aria-hidden="true">*</span><span class="sr-only">{{ _('required') }}</span></label>
                             <input type="text" id="full_name" name="full_name" required aria-required="true" autocomplete="name">
                         </div>
                         
                         <div class="form-group">
-                            <label for="email">Email <span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                            <label for="email">{{ _('Email') }} <span aria-hidden="true">*</span><span class="sr-only">{{ _('required') }}</span></label>
                             <input type="email" id="email" name="email" required aria-required="true" autocomplete="email">
                         </div>
                         
                         <div class="form-group">
-                            <label for="phone">Phone <span class="sr-only">optional</span></label>
+                            <label for="phone">{{ _('Phone') }} <span class="sr-only">{{ _('optional') }}</span></label>
                             <input type="tel" id="phone" name="phone" placeholder="555-987-6543" autocomplete="tel" aria-required="false">
                         </div>
                         
                         <div class="form-group">
-                            <label>Verification Type</label>
+                            <label>{{ _('Verification Type') }}</label>
                             <div class="static-field">
                                 {% if years == '0' %}
-                                Employment Verification (single employer)
+                                {{ _('Employment Verification (single employer)') }}
                                 {% else %}
-                                Last {{ years }} Years
+                                {{ _('Last') }} {{ years }} {{ _('Years') }}
                                 {% endif %}
                             </div>
                         </div>
                         
                         <div class="form-navigation">
-                            <button type="button" class="button primary next-step" data-next="2">Next: Employment Timeline</button>
+                            <button type="button" class="button primary next-step" data-next="2">{{ _('Next: Employment Timeline') }}</button>
                         </div>
                     </section>
                     
                     <!-- Step 2: Timeline Overview -->
                     <section class="form-section" id="step-2" data-step="2" style="display: none;">
-                        <h2>Employment Timeline</h2>
+                        <h2>{{ _('Employment Timeline') }}</h2>
                         <p>
                             {% if years == '0' %}
-                            Please provide details about your employment.
+                            {{ _('Please provide details about your employment.') }}
                             {% else %}
-                            Please account for the last {{ years }} years of your employment history, including any gaps.
+                            {{ _('Please account for the last') }} {{ years }} {{ _('years of your employment history, including any gaps.') }}
                             {% endif %}
                         </p>
                         
                         <div class="timeline-visualization" aria-labelledby="timeline-heading">
-                            <h3 id="timeline-heading">Timeline Coverage</h3>
-                            <div class="timeline-container" role="img" aria-label="Visual representation of your employment timeline">
+                            <h3 id="timeline-heading">{{ _('Timeline Coverage') }}</h3>
+                            <div class="timeline-container" role="img" aria-label="{{ _('Visual representation of your employment timeline') }}">
                                 <div class="timeline-ruler"></div>
                                 <div id="timeline-segments" aria-hidden="true"></div>
                                 <div class="timeline-labels">
-                                    <div class="timeline-start-label">Now - <span id="timeline-start-year"></span></div>
+                                    <div class="timeline-start-label">{{ _('Now') }} - <span id="timeline-start-year"></span></div>
                                     <div class="timeline-end-label"><span id="timeline-end-year"></span></div>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="time-accounted" aria-live="polite">
-                            <span>Time accounted for: </span>
+                            <span>{{ _('Time accounted for:') }} </span>
                             <span id="years-accounted">0</span>
-                            <span> years</span>
+                            <span> {{ _('years') }}</span>
                             <div id="time-validation" class="validation-message" aria-live="assertive"></div>
                         </div>
                         
                         <div class="entries-summary" id="entries-summary">
-                            <h3>Your Entries</h3>
+                            <h3>{{ _('Your Entries') }}</h3>
                             <div id="entries-list" class="entries-list">
                                 <!-- Entry summaries will be displayed here -->
-                                <p class="no-entries-message">No entries yet. Add your first employment entry.</p>
+                                <p class="no-entries-message">{{ _('No entries yet. Add your first employment entry.') }}</p>
                             </div>
                         </div>
                         
                         <div class="form-navigation">
-                            <button type="button" class="button secondary prev-step" data-prev="1">Previous: Personal Information</button>
-                            <button type="button" class="button secondary" id="add-entry-btn">Add Employment Entry</button>
+                            <button type="button" class="button secondary prev-step" data-prev="1">{{ _('Previous: Personal Information') }}</button>
+                            <button type="button" class="button secondary" id="add-entry-btn">{{ _('Add Employment Entry') }}</button>
                             <button type="button" class="button primary next-step" id="to-signature-btn" data-next="{% if degree_required %}5{% else %}4{% endif %}" disabled>
                                 {% if degree_required %}
-                                Next: Degree Verification
+                                {{ _('Next: Degree Verification') }}
                                 {% else %}
-                                Next: Signature
+                                {{ _('Next: Signature') }}
                                 {% endif %}
                             </button>
                         </div>
@@ -123,16 +132,16 @@
                     
                     <!-- Step 3: Entry Form (Single Entry at a time) -->
                     <section class="form-section" id="step-3" data-step="3" style="display: none;">
-                        <h2>Employment Entry</h2>
-                        <p>Please provide details for this employment period.</p>
+                        <h2>{{ _('Employment Entry') }}</h2>
+                        <p>{{ _('Please provide details for this employment period.') }}</p>
                         
                         <div id="current-entry-container">
                             <!-- Current entry form will be placed here -->
                         </div>
                         
                         <div class="form-navigation">
-                            <button type="button" class="button secondary" id="back-to-timeline-btn">Back to Timeline</button>
-                            <button type="button" class="button primary" id="save-entry-btn">Save Entry</button>
+                            <button type="button" class="button secondary" id="back-to-timeline-btn">{{ _('Back to Timeline') }}</button>
+                            <button type="button" class="button primary" id="save-entry-btn">{{ _('Save Entry') }}</button>
                         </div>
                     </section>
                     

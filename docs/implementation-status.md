@@ -20,6 +20,8 @@ The system currently has the following components fully implemented:
 | Timeline Visualization | ✅ Implemented | Visual representation of timeline coverage with validation |
 | Digital Signature Capture | ✅ Implemented | Canvas-based signature capture using signature_pad.js |
 | Confirmation Page | ✅ Implemented | Success message with PDF download link |
+| Degree Verification | ✅ Implemented | Optional step for collecting education credentials |
+| Internationalization | ✅ Implemented | Multi-language support with language switcher |
 
 ### Backend Components
 
@@ -31,6 +33,9 @@ The system currently has the following components fully implemented:
 | JSON Generation | ✅ Implemented | Creates structured JSON representation of claims |
 | Claims Storage | ✅ Implemented | File-based storage in the claims directory |
 | CSRF Protection | ✅ Implemented | Using Flask-WTF's CSRFProtect |
+| Internationalization | ✅ Implemented | Multi-language support using Flask-Babel |
+| Translations API | ✅ Implemented | Endpoint for JavaScript translations |
+| Degree Verification | ✅ Implemented | Processing and storage of education credentials |
 
 ### Use Cases
 
@@ -41,6 +46,8 @@ The system currently has the following components fully implemented:
 | UC3: Review Incomplete Submission | ✅ Implemented | Form validation prevents submission until requirements met |
 | UC4: Process Claim Data Programmatically | ✅ Implemented | JSON generation supports this |
 | UC5: Revisit and Resubmit Claim | ✅ Implemented | Form allows editing before submission |
+| UC6: Submit Education Credentials | ✅ Implemented | Degree verification step collects education information |
+| UC7: Use System in Different Languages | ✅ Implemented | Users can switch between English, Spanish, French, and Italian |
 
 ## System Boundaries and Limitations
 

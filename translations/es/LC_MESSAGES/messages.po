@@ -1,0 +1,160 @@
+# Spanish translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-03-17 20:53-0400\n"
+"PO-Revision-Date: 2025-03-17 20:42-0400\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: templates/form.html:50
+msgid "Personal Information"
+msgstr "Información Personal"
+
+#: templates/form.html:52
+msgid "Full Name"
+msgstr "Nombre Completo"
+
+#: templates/form.html:52 templates/form.html:57
+msgid "required"
+msgstr "obligatorio"
+
+#: templates/form.html:57
+msgid "Email"
+msgstr "Correo Electrónico"
+
+#: templates/form.html:62
+msgid "Phone"
+msgstr "Teléfono"
+
+#: templates/form.html:62
+msgid "optional"
+msgstr "opcional"
+
+#: templates/form.html:67
+msgid "Verification Type"
+msgstr "Tipo de Verificación"
+
+#: templates/form.html:70
+msgid "Employment Verification (single employer)"
+msgstr "Verificación de Empleo (un solo empleador)"
+
+#: templates/form.html:72
+msgid "Last"
+msgstr "Últimos"
+
+#: templates/form.html:72
+msgid "Years"
+msgstr "Años"
+
+#: templates/form.html:78
+msgid "Next: Employment Timeline"
+msgstr "Siguiente: Cronología de Empleo"
+
+#: templates/form.html:33
+msgid "Step"
+msgstr "Paso"
+
+#: templates/form.html:33
+msgid "of"
+msgstr "de"
+
+#: templates/form.html:39
+msgid "This form collects your employment history information. It is divided into multiple steps including personal information, employment timeline,"
+msgstr "Este formulario recopila información sobre su historial laboral. Se divide en varios pasos que incluyen información personal, cronología de empleo,"
+
+#: templates/form.html:39
+msgid "degree verification,"
+msgstr "verificación de título,"
+
+#: templates/form.html:39
+msgid "and signature."
+msgstr "y firma."
+
+#: templates/form.html:84
+msgid "Employment Timeline"
+msgstr "Cronología de Empleo"
+
+#: templates/form.html:87
+msgid "Please provide details about your employment."
+msgstr "Por favor, proporcione detalles sobre su empleo."
+
+#: templates/form.html:89
+msgid "Please account for the last"
+msgstr "Por favor, tenga en cuenta los últimos"
+
+#: templates/form.html:89
+msgid "years of your employment history, including any gaps."
+msgstr "años de su historial laboral, incluidos los períodos sin empleo."
+
+#: templates/form.html:94
+msgid "Timeline Coverage"
+msgstr "Cobertura de la Cronología"
+
+#: templates/form.html:95
+msgid "Visual representation of your employment timeline"
+msgstr "Representación visual de su cronología de empleo"
+
+#: templates/form.html:98
+msgid "Now"
+msgstr "Ahora"
+
+#: templates/form.html:106
+msgid "Time accounted for:"
+msgstr "Tiempo contabilizado:"
+
+#: templates/form.html:108
+msgid "years"
+msgstr "años"
+
+#: templates/form.html:113
+msgid "Your Entries"
+msgstr "Sus Entradas"
+
+#: templates/form.html:116
+msgid "No entries yet. Add your first employment entry."
+msgstr "Aún no hay entradas. Añada su primera entrada de empleo."
+
+#: templates/form.html:121
+msgid "Previous: Personal Information"
+msgstr "Anterior: Información Personal"
+
+#: templates/form.html:122
+msgid "Add Employment Entry"
+msgstr "Añadir Entrada de Empleo"
+
+#: templates/form.html:125
+msgid "Next: Degree Verification"
+msgstr "Siguiente: Verificación de Título"
+
+#: templates/form.html:127
+msgid "Next: Signature"
+msgstr "Siguiente: Firma"
+
+#: templates/form.html:135
+msgid "Employment Entry"
+msgstr "Entrada de Empleo"
+
+#: templates/form.html:136
+msgid "Please provide details for this employment period."
+msgstr "Por favor, proporcione detalles para este período de empleo."
+
+#: templates/form.html:143
+msgid "Back to Timeline"
+msgstr "Volver a la Cronología"
+
+#: templates/form.html:144
+msgid "Save Entry"
+msgstr "Guardar Entrada"
+

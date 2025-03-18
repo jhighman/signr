@@ -1,11 +1,53 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     // Detect language from HTML lang attribute or use 'en' as default
     const lang = document.documentElement.lang || 'en';
     console.log(`Detected language: ${lang}`);
     
-    // Translations for different languages
-    const translations = {
-        en: {
+    // Set up language switcher
+    const languageSelect = document.getElementById('language-select');
+    if (languageSelect) {
+        languageSelect.addEventListener('change', function() {
+            const newLang = this.value;
+            // Get current URL
+            const url = new URL(window.location.href);
+            // Update or add lang parameter
+            url.searchParams.set('lang', newLang);
+            // Redirect to the new URL
+            window.location.href = url.toString();
+        });
+    }
+    
+    // Fetch translations from server
+    let t;
+    try {
+        const response = await fetch(`/translations/${lang}`);
+        if (response.ok) {
+            const translations = await response.json();
+            console.log('Loaded translations from server:', translations);
+            
+            // Add helper functions for formatted strings
+            t = {
+                ...translations,
+                // Add formatter functions for strings with parameters
+                accountForYears: (years) => {
+                    return translations.accountForYears.replace('{0}', years);
+                },
+                startBeforeEnd: (entryNum) => {
+                    return translations.startBeforeEnd.replace('{0}', entryNum);
+                },
+                addAnotherDesc: (accounted, required) => {
+                    return translations.addAnotherDesc
+                        .replace('{0}', accounted)
+                        .replace('{1}', required);
+                }
+            };
+        } else {
+            throw new Error('Failed to load translations');
+        }
+    } catch (error) {
+        console.error('Error loading translations:', error);
+        // Fallback to English with basic translations
+        t = {
             errorSavingEntry: 'An error occurred while saving the entry. Please try again.',
             noEntryFound: 'Error: No entry found to save. Please try again or refresh the page.',
             pleaseAddEmployer: 'Please add at least one employer before proceeding.',
@@ -19,56 +61,8 @@ document.addEventListener('DOMContentLoaded', function() {
             addAnotherTitle: 'Add Another Entry?',
             addAnotherDesc: (accounted, required) => `You've already accounted for ${accounted} years, which meets the requirement of ${required} years. Do you still want to add another entry?`,
             addEntry: 'Add Entry'
-        },
-        es: {
-            errorSavingEntry: 'Se produjo un error al guardar la entrada. Por favor, inténtelo de nuevo.',
-            noEntryFound: 'Error: No se encontró ninguna entrada para guardar. Inténtelo de nuevo o actualice la página.',
-            pleaseAddEmployer: 'Por favor, añada al menos un empleador antes de continuar.',
-            accountForYears: (years) => `Por favor, tenga en cuenta al menos ${years} años antes de continuar.`,
-            startBeforeEnd: (entryNum) => `El mes de inicio debe ser anterior al mes de finalización para la entrada #${entryNum}`,
-            confirmDeleteTitle: 'Confirmar Eliminación',
-            confirmDeleteDesc: '¿Está seguro de que desea eliminar esta entrada?',
-            cancel: 'Cancelar',
-            delete: 'Eliminar',
-            entryDeleted: 'Entrada eliminada',
-            addAnotherTitle: '¿Añadir Otra Entrada?',
-            addAnotherDesc: (accounted, required) => `Ya ha contabilizado ${accounted} años, lo que cumple con el requisito de ${required} años. ¿Desea añadir otra entrada?`,
-            addEntry: 'Añadir Entrada'
-        },
-        fr: {
-            errorSavingEntry: 'Une erreur s\'est produite lors de l\'enregistrement de l\'entrée. Veuillez réessayer.',
-            noEntryFound: 'Erreur : Aucune entrée trouvée à enregistrer. Veuillez réessayer ou actualiser la page.',
-            pleaseAddEmployer: 'Veuillez ajouter au moins un employeur avant de continuer.',
-            accountForYears: (years) => `Veuillez tenir compte d'au moins ${years} ans avant de continuer.`,
-            startBeforeEnd: (entryNum) => `Le mois de début doit être antérieur au mois de fin pour l'entrée #${entryNum}`,
-            confirmDeleteTitle: 'Confirmer la Suppression',
-            confirmDeleteDesc: 'Êtes-vous sûr de vouloir supprimer cette entrée ?',
-            cancel: 'Annuler',
-            delete: 'Supprimer',
-            entryDeleted: 'Entrée supprimée',
-            addAnotherTitle: 'Ajouter une Autre Entrée ?',
-            addAnotherDesc: (accounted, required) => `Vous avez déjà comptabilisé ${accounted} années, ce qui répond à l'exigence de ${required} années. Voulez-vous ajouter une autre entrée ?`,
-            addEntry: 'Ajouter une Entrée'
-        },
-        it: {
-            errorSavingEntry: 'Si è verificato un errore durante il salvataggio dell\'inserimento. Si prega di riprovare.',
-            noEntryFound: 'Errore: Nessun inserimento trovato da salvare. Riprova o aggiorna la pagina.',
-            pleaseAddEmployer: 'Si prega di aggiungere almeno un datore di lavoro prima di procedere.',
-            accountForYears: (years) => `Si prega di considerare almeno ${years} anni prima di procedere.`,
-            startBeforeEnd: (entryNum) => `Il mese di inizio deve essere precedente al mese di fine per l'inserimento #${entryNum}`,
-            confirmDeleteTitle: 'Conferma Eliminazione',
-            confirmDeleteDesc: 'Sei sicuro di voler eliminare questo inserimento?',
-            cancel: 'Annulla',
-            delete: 'Elimina',
-            entryDeleted: 'Inserimento eliminato',
-            addAnotherTitle: 'Aggiungere un Altro Inserimento?',
-            addAnotherDesc: (accounted, required) => `Hai già contabilizzato ${accounted} anni, che soddisfa il requisito di ${required} anni. Vuoi aggiungere un altro inserimento?`,
-            addEntry: 'Aggiungi Inserimento'
-        }
-    };
-    
-    // Get translations for current language or fallback to English
-    const t = translations[lang] || translations.en;
+        };
+    }
     
     // Initialize variables
     let entryCount = 0;
